@@ -1,0 +1,35 @@
+body {
+    padding-top: 3em;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+#board {
+    display: flex;
+    border: 0;
+    padding: 0;
+}
+div {
+    border: solid 10px brown;
+    padding: 1.25em;
+}
+#p1Store, #pits, #p2Store {
+    display: inline-block;
+}
+#pits {
+    border: 0px;
+    padding: 0;
+}
+#p2pits, #p1pits {
+    display:flex;
+    flex-direction: row;
+    padding: 0;
+    border: 0;
+}
+#p1UserName, #p2UserName {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    border: 0;
+    font-size: 1.75em;
+}
