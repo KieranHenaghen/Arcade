@@ -79,20 +79,7 @@ startGameButton.addEventListener("click", function() {
         pit12: 4,
         p2Store: 0,
     };
-    pit1.innerText = board.pit1;
-    pit2.innerText = board.pit2;
-    pit3.innerText = board.pit3;
-    pit4.innerText = board.pit4;
-    pit5.innerText = board.pit5;
-    pit6.innerText = board.pit6;
-    pit7.innerText = board.pit7;
-    pit8.innerText = board.pit8;
-    pit9.innerText = board.pit9;
-    pit10.innerText = board.pit10;
-    pit11.innerText = board.pit11;
-    pit12.innerText = board.pit12;
-    store1.innerText = board.p1Store;
-    store2.innerText = board.p2Store;
+    addPips()
 })
 
 let pits = document.getElementsByClassName("pits");
@@ -234,20 +221,7 @@ function distribution1 (c, pitNum) {
     
     winChecker()
 
-    pit1.innerText = board.pit1;
-    pit2.innerText = board.pit2;
-    pit3.innerText = board.pit3;
-    pit4.innerText = board.pit4;
-    pit5.innerText = board.pit5;
-    pit6.innerText = board.pit6;
-    pit7.innerText = board.pit7;
-    pit8.innerText = board.pit8;
-    pit9.innerText = board.pit9;
-    pit10.innerText = board.pit10;
-    pit11.innerText = board.pit11;
-    pit12.innerText = board.pit12;
-    store1.innerText = board.p1Store;
-    store2.innerText = board.p2Store;  
+    addPips() 
 
 }
 
@@ -319,20 +293,7 @@ function distribution2 (c, pitNum) {
     
     winChecker()
 
-    pit1.innerText = board.pit1;
-    pit2.innerText = board.pit2;
-    pit3.innerText = board.pit3;
-    pit4.innerText = board.pit4;
-    pit5.innerText = board.pit5;
-    pit6.innerText = board.pit6;
-    pit7.innerText = board.pit7;
-    pit8.innerText = board.pit8;
-    pit9.innerText = board.pit9;
-    pit10.innerText = board.pit10;
-    pit11.innerText = board.pit11;
-    pit12.innerText = board.pit12;
-    store1.innerText = board.p1Store;
-    store2.innerText = board.p2Store;
+    addPips()
 
 }
 
@@ -525,18 +486,59 @@ function cpuChoice() {
         distribution2(iLargest, largestPit)
 
     }
-    pit1.innerText = board.pit1;
-    pit2.innerText = board.pit2;
-    pit3.innerText = board.pit3;
-    pit4.innerText = board.pit4;
-    pit5.innerText = board.pit5;
-    pit6.innerText = board.pit6;
-    pit7.innerText = board.pit7;
-    pit8.innerText = board.pit8;
-    pit9.innerText = board.pit9;
-    pit10.innerText = board.pit10;
-    pit11.innerText = board.pit11;
-    pit12.innerText = board.pit12;
-    store1.innerText = board.p1Store;
-    store2.innerText = board.p2Store;
+    addPips()
+}
+
+// Pips
+
+function addPips() {
+    const pip = document.createElement("img");
+    pip.src = "indigo.png";
+
+    for (let key in board) {
+        for (let j = 0; j<board[key]; j++) {
+            if (key == pit1) {
+                pit1.appendChild(pip)
+            }
+            else if (key == pit2) {
+                pit2.appendChild(pip)
+            }
+            else if (key == pit3) {
+                pit3.appendChild(pip)
+            }
+            else if (key == pit4) {
+                pit4.appendChild(pip)
+            }
+            else if (key == pit5) {
+                pit5.appendChild(pip)
+            }
+            else if (key == pit6) {
+                pit6.appendChild(pip)
+            }
+            else if (key == pit7) {
+                pit7.appendChild(pip)
+            }
+            else if (key == pit8) {
+                pit8.appendChild(pip)
+            }
+            else if (key == pit9) {
+                pit9.appendChild(pip)
+            }
+            else if (key == pit10) {
+                pit10.appendChild(pip)
+            }
+            else if (key == pit11) {
+                pit11.appendChild(pip)
+            }
+            else if (key == pit12) {
+                pit12.appendChild(pip)
+            }
+            else if (key == p1Store) {
+                store1.appendChild(pip)
+            }
+            else if (key == p2Store) {
+                store2.appendChild(pip)
+            }
+        }
+    }
 }
