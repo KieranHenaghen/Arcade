@@ -47,6 +47,7 @@ $('.board').on('click', onBoardClick); // etc
 let board;
 let p1;
 let p2;
+let turn;
 let startGameButton = document.getElementById("startGame")
 let turnMarker = document.getElementById("turn")
 startGameButton.addEventListener("click", function() {
@@ -63,6 +64,7 @@ startGameButton.addEventListener("click", function() {
     p1User.innerText = p1;
     p2User.innerText = p2;
     turnMarker.innerText = p1+"'s turn.";
+    turn = 1;
     board = {
         pit1: 4,
         pit2: 4,
@@ -79,7 +81,8 @@ startGameButton.addEventListener("click", function() {
         pit12: 4,
         p2Store: 0,
     };
-    addPips()
+    resetPips();
+    addPips();
 })
 
 let pits = document.getElementsByClassName("pits");
@@ -103,57 +106,72 @@ let pit12 = document.getElementById("pit12")
 let store1 = document.getElementById("p1Store")
 let store2 = document.getElementById("p2Store")
 
+let distributed;
+
 // Gameplay Functions
 
 function pipTaker(c) {
     if (c == 1) {
         board.p1Store = board.p1Store + board.pit12;
         board.pit12 = 0;
+        removePips("pit12", "p1Store");
     }
     else if (c == 2) {
         board.p1Store = board.p1Store + board.pit11;
         board.pit11 = 0;
+        removePips("pit11", "p1Store");
     }
     else if (c == 3) {
         board.p1Store = board.p1Store + board.pit10;
         board.pit10 = 0;
+        removePips("pit10", "p1Store");
     }
     else if (c == 4) {
         board.p1Store = board.p1Store + board.pit9;
         board.pit9 = 0;
+        removePips("pit9", "p1Store");
     }
     else if (c == 5) {
         board.p1Store = board.p1Store + board.pit8;
         board.pit8 = 0;
+        removePips("pit8", "p1Store");
     }
     else if (c == 6) {
         board.p1Store = board.p1Store + board.pit7;
         board.pit7 = 0;
+        removePips("pit7", "p1Store");
     }
     else if (c == 7) {
         board.p2Store = board.p2Store + board.pit6;
         board.pit6 = 0;
+        removePips("pit6", "p2Store");
     }
     else if (c == 8) {
         board.p2Store = board.p2Store + board.pit5;
         board.pit5 = 0;
+        removePips("pit5", "p2Store");
     }
     else if (c == 9) {
         board.p2Store = board.p2Store + board.pit4;
         board.pit4 = 0;
+        removePips("pit4", "p2Store");
     }
     else if (c == 10) {
         board.p2Store = board.p2Store + board.pit3;
         board.pit3 = 0;
+        removePips("pit3", "p2Store");
     }
     else if (c == 11) {
         board.p2Store = board.p2Store + board.pit2;
         board.pit2 = 0;
+        removePips("pit2", "p2Store");
     }
     else if (c == 12) {
         board.p2Store = board.p2Store + board.pit1;
         board.pit1 = 0;
+        removePips("pit1", "p2Store")
     }
+    
 }
 
 function winChecker() {
@@ -163,23 +181,25 @@ function winChecker() {
         for (let i=7; i<13; i++) {
             board.p2Store = board.p2Store + board["pit"+i];
             board["pit"+i] = 0;
+            removePips("pit"+i, "p2Store")
         }
     }
     else if (p2Pits == 0){
         for (let i=1; i<7; i++) {
             board.p1Store = board.p1Store +board["pit"+i];
             board["pit"+i] = 0;
+            removePips("pit"+i, "p1Store")
         }
     }
     
     if (board.p1Store > board.p2Store && p1Pits + p2Pits == 0) {
-        turnMarker.innerText = p1+" wins."
+        turnMarker.innerText = p1+" wins."+" Score: "+board.p1Store+" to "+board.p2Store+".";
     }
     else if (board.p2Store > board.p1Store && p1Pits + p2Pits == 0) {
-        turnMarker.innerText = p2+" wins."
+        turnMarker.innerText = p2+" wins."+" Score: "+board.p2Store+" to "+board.p1Store+".";
     }
     else if (board.p2Store == board.p1Store && p1Pits + p2Pits == 0) {
-        turnMarker.innerText = "It's a draw."
+        turnMarker.innerText = "It's a draw.";
     }
 
 }
@@ -195,6 +215,7 @@ function distribution1 (c, pitNum) {
             store1Var = store1Var + 1;
             placeholder = placeholder - 1;
             storeAdd = true;
+            movePips(pitNum, "p1Store");
         }
         else if ("pit"+c == "pit12") {
             c = 0;
@@ -203,52 +224,55 @@ function distribution1 (c, pitNum) {
         c += 1;
         board["pit"+c] = board["pit"+c] +1;
         placeholder -= 1;
+        movePips(pitNum, "pit"+c);
         }
     }
     board[pitNum] = placeholder;
     board.p1Store = store1Var;
 
-    if (board["pit"+c] == 1 && c <= 6) {
+    if (board["pit"+c] == 1 && c <= 6 && storeAdd == false) {
         pipTaker(c);
         turnMarker.innerText = p2+"'s turn.";
+        turn = 2;
     }
     else if (storeAdd == true && c == 6) {
         turnMarker.innerText = p1+"'s turn.";
+        turn = 1
     }
     else {
         turnMarker.innerText = p2+"'s turn.";
+        turn = 2;
     }
+    console.log(board)
+    console.log(turnMarker.innerText, turn)
+    winChecker();
     
-    winChecker()
-
-    addPips() 
-
 }
 
 function pitChoice1(event) {
-    if (turnMarker.innerText == p1+"'s turn.") {
-        if (event.target == pit1) {
+    if (turn == 1) {
+        if (event.target == pit1 && board.pit1 > 0) {
             distribution1(1, "pit1");            
         }
-        else if (event.target == pit2) {
+        else if (event.target == pit2 && board.pit2 > 0) {
             distribution1(2, "pit2");
         }
-        else if (event.target == pit3) {
+        else if (event.target == pit3 && board.pit3 > 0) {
             distribution1(3, "pit3");
         }
-        else if (event.target == pit4) {
+        else if (event.target == pit4 && board.pit4 > 0) {
             distribution1(4, "pit4");
         }
-        else if (event.target == pit5) {
+        else if (event.target == pit5 && board.pit5 > 0) {
             distribution1(5, "pit5");
         }
-        else if (event.target == pit6) {
+        else if (event.target == pit6 && board.pit6 > 0) {
             distribution1(6, "pit6");
         }
         else {
             return
         }
-        if (turnMarker.innerText == "CPU's turn.") {
+        if (turn == 2) {
             cpuChoice();
         }
     }
@@ -264,57 +288,66 @@ function distribution2 (c, pitNum) {
     let placeholder = board[pitNum];
     let store2Var = board["p2Store"];
     let storeAdd;
+    console.log(pitNum, c, board["pit"+c])
     while (placeholder > 0) {
         if ("pit"+c == "pit12") {
             store2Var = store2Var + 1;
             placeholder = placeholder - 1;
             storeAdd = true;
             c = 0;
+            movePips(pitNum, "p2Store");
         }
         if (placeholder !== 0){
-        c += 1;
-        board["pit"+c] = board["pit"+c] + 1;
-        placeholder -= 1;
+            c += 1;
+            board["pit"+c] = board["pit"+c] + 1;
+            placeholder -= 1;
+            movePips(pitNum, "pit"+c)
         }
     }
+    console.log(board[pitNum])
     board[pitNum] = placeholder;
     board.p2Store = store2Var;
 
-    if (board["pit"+c] == 1 && (c < 13 || c > 6)) {
+    if (board["pit"+c] == 1 && c < 13 && c > 6) {
         pipTaker(c);
         turnMarker.innerText = p1+"'s turn.";
+        turn = 1;
+
     }
     else if (storeAdd = true && c == 0) {
         turnMarker.innerText = p2+"'s turn.";
+        turn = 2;
     }
     else {
         turnMarker.innerText = p1+"'s turn.";
+        turn = 1;
     }
+    distributed = true;
+    console.log(board)
+    console.log(turnMarker.innerText, turn)
+    winChecker();
     
-    winChecker()
-
-    addPips()
 
 }
 
 function pitChoice2(event) {
-    if (turnMarker.innerText == p2+"'s turn." && turnMarker.innerText !== "CPU"+"'s turn.") {
-        if (event.target == pit7) {
+    if (turn == 2 && turnMarker.innerText !== "CPU"+"'s turn.") {
+        if (event.target == pit7 && board.pit7 > 0) {
             distribution2(7, "pit7");            
         }
-        else if (event.target == pit8) {
+        else if (event.target == pit8 && board.pit8 > 0) {
             distribution2(8, "pit8");
         }
-        else if (event.target == pit9) {
+        else if (event.target == pit9 && board.pit9 > 0) {
             distribution2(9, "pit9");
         }
-        else if (event.target == pit10) {
+        else if (event.target == pit10 && board.pit10 > 0) {
             distribution2(10, "pit10");
         }
-        else if (event.target == pit11) {
+        else if (event.target == pit11 && board.pit11 > 0) {
             distribution2(11, "pit11");
         }
-        else if (event.target == pit12) {
+        else if (event.target == pit12 && board.pit12 > 0) {
             distribution2(12, "pit12");
         }
         else {
@@ -462,83 +495,66 @@ function pipChecker() {
 }
 
 function cpuChoice() {
-    if (p2 == "CPU") {
+    console.log(board)
+    console.log(turnMarker.innerText)
+
+    if (turn == 2) {
+        distributed = false;
         twoTurns();
         pipChecker();
-
-        let largestPit;
-        let largestPitNum;
-        let iLargest;
-        for (let i =8; i<13; i++) {
-            largestPit = board["pit"+7];
-            largestPitNum = "pit"+7;
-            iLargest = 7;
-            if (largestPit < board["pit"+i]) {
-                largestPit = board["pit"+i];
-                largestPitNum = "pit"+i
-                iLargest = i;
-            }
-            else {
-                continue
-            }
+        if (distributed !== true) {
+            let largestPit = board["pit"+7];
+            let largestPitNum = "pit"+7;
+            let iLargest = 7;
+            for (let i =8; i<13; i++) {
+                
+                if (largestPit < board["pit"+i]) {
+                    largestPit = board["pit"+i];
+                    largestPitNum = "pit"+i
+                    iLargest = i;
+                }
             
+            }
+            distribution2(iLargest, largestPitNum)
         }
-        distribution2(iLargest, largestPit)
-
     }
-    addPips()
 }
 
-// Pips
+// Pip
 
 function addPips() {
-    const pip = document.createElement("img");
-    pip.src = "indigo.png";
 
     for (let key in board) {
         for (let j = 0; j<board[key]; j++) {
-            if (key == pit1) {
-                pit1.appendChild(pip)
-            }
-            else if (key == pit2) {
-                pit2.appendChild(pip)
-            }
-            else if (key == pit3) {
-                pit3.appendChild(pip)
-            }
-            else if (key == pit4) {
-                pit4.appendChild(pip)
-            }
-            else if (key == pit5) {
-                pit5.appendChild(pip)
-            }
-            else if (key == pit6) {
-                pit6.appendChild(pip)
-            }
-            else if (key == pit7) {
-                pit7.appendChild(pip)
-            }
-            else if (key == pit8) {
-                pit8.appendChild(pip)
-            }
-            else if (key == pit9) {
-                pit9.appendChild(pip)
-            }
-            else if (key == pit10) {
-                pit10.appendChild(pip)
-            }
-            else if (key == pit11) {
-                pit11.appendChild(pip)
-            }
-            else if (key == pit12) {
-                pit12.appendChild(pip)
-            }
-            else if (key == p1Store) {
-                store1.appendChild(pip)
-            }
-            else if (key == p2Store) {
-                store2.appendChild(pip)
-            }
+            const pip = document.createElement('img');
+            pip.src = "indigo.png";
+            pip.style.height = '10px';
+            pip.style.width = '10px';
+            pip.style.borderRadius = '10px';
+            
+            document.getElementById(key).appendChild(pip);
+            
         }
+    }
+}
+function movePips(pitOrigin, pitNew) {
+    let pips = document.getElementById(pitOrigin).getElementsByTagName('img');
+    document.getElementById(pitNew).appendChild(pips[0])
+}
+
+function removePips(pitOrigin, pitNew) {
+    let pips = document.getElementById(pitOrigin).getElementsByTagName('img');
+    for (let i=0; i< pips.length; i++) {
+        document.getElementById(pitNew).appendChild(pips[i])
+    }
+}
+function resetPips() {
+    let pips = document.getElementsByTagName('img');
+    let divs = document.getElementsByTagName('div');
+    for (let i=0; i<divs.length; i++) {
+        for (let j=0; j<pips.length; j++) {
+            divs[i].removeChild(pips[j]);
+        }
+        
     }
 }
