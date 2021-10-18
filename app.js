@@ -177,7 +177,10 @@ function pipTaker(c) {
 function winChecker() {
     let p1Pits = (board.pit1 + board.pit2 + board.pit3 + board.pit4 + board.pit5 + board.pit6)
     let p2Pits = (board.pit7 + board.pit8 + board.pit9 + board.pit10 +board.pit11 + board.pit12)
-    if (p1Pits == 0){
+    if (p1Pits == 0 && p2Pits == 0) {
+        
+    }
+    else if (p1Pits == 0){
         for (let i=7; i<13; i++) {
             board.p2Store = board.p2Store + board["pit"+i];
             board["pit"+i] = 0;
@@ -230,13 +233,21 @@ function distribution1 (c, pitNum) {
     board[pitNum] = placeholder;
     board.p1Store = store1Var;
 
-    if (board["pit"+c] == 1 && c <= 6 && storeAdd == false) {
-        pipTaker(c);
-        turnMarker.innerText = p2+"'s turn.";
-        turn = 2;
+    if (board["pit"+c] == 1) {
+        if (c<6) {
+            pipTaker(c);
+            turnMarker.innerText = p2+"'s turn.";
+            turn = 2;
+        }
+        else if (c == 6 && storeAdd !== true) {
+            pipTaker(c);
+            turnMarker.innerText = p2+"'s turn.";
+            turn = 2;
+        }
     }
     else if (storeAdd == true && c == 6) {
         turnMarker.innerText = p1+"'s turn.";
+        winChecker();
         turn = 1
     }
     else {
@@ -316,6 +327,7 @@ function distribution2 (c, pitNum) {
     }
     else if (storeAdd = true && c == 0) {
         turnMarker.innerText = p2+"'s turn.";
+        winChecker();
         turn = 2;
     }
     else {
@@ -498,7 +510,7 @@ function cpuChoice() {
     console.log(board)
     console.log(turnMarker.innerText)
 
-    if (turn == 2) {
+    if (turnMarker.innerText == "CPU's turn.") {
         distributed = false;
         twoTurns();
         pipChecker();
@@ -543,18 +555,23 @@ function movePips(pitOrigin, pitNew) {
 }
 
 function removePips(pitOrigin, pitNew) {
-    let pips = document.getElementById(pitOrigin).getElementsByTagName('img');
-    for (let i=0; i< pips.length; i++) {
-        document.getElementById(pitNew).appendChild(pips[i])
+    let pipsId = document.getElementById(pitOrigin)
+    let pips = pipsId.getElementsByTagName('img');
+    while (pips.length>0) {
+        console.log(pips);
+        document.getElementById(pitNew).appendChild(pips[0])
     }
 }
 function resetPips() {
-    let pips = document.getElementsByTagName('img');
-    let divs = document.getElementsByTagName('div');
-    for (let i=0; i<divs.length; i++) {
-        for (let j=0; j<pips.length; j++) {
-            divs[i].removeChild(pips[j]);
+    let boardArr = [p1Store, p2Store, pit1, pit2, pit3, pit4, pit5, pit6, pit7, pit8, pit9, pit10, pit11, pit12]
+    for (let i=0; i<boardArr.length; i++) {
+        let pips = boardArr[i].getElementsByTagName('img');
+
+        while(pips.length>0) {
+            console.log(boardArr, pips)
+            boardArr[i].removeChild(pips[0]);
         }
         
     }
+
 }

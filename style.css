@@ -6,7 +6,8 @@ body {
     background-color: #E1B58C;
 }
 #board {
-    display: flex;
+    display: table;
+    width: 100%;
     border: 0;
     padding: 0;
 }
@@ -17,7 +18,7 @@ div {
     align-content: center;
 }
 #p1Store, #pits, #p2Store {
-    display: inline-block;
+    display: table-cell;
     background-color: #ECDCB0;
 }
 #pits {
